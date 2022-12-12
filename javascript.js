@@ -40,6 +40,9 @@ let correctAnswer;
 //Rock Paper Scicssors
 const rps_div = document.getElementById('rps');
 
+// Next destination button
+const next_destination = document.getElementById('next-destination')
+
 //update gifts
 //giftsUpdate.innerText = gifts;
 
@@ -102,7 +105,7 @@ async function getAirportPosition(icao) {
     const userName = document.querySelector('#user-name').value;
     //document.getElementById('welcome').innerText = `Hi ${userName}, let's start your journey!`;
     const response = await fetch(
-        'http://127.0.0.1:5000/gamerinfo?name=' + userName + '&location=' +
+        'http://127.0.0.1:5100/gamerinfo?name=' + userName + '&location=' +
         icao);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     const pos = [jsonData.airport.Lat, jsonData.airport.Long];                                  // create position array for leaflet library
@@ -132,7 +135,7 @@ async function getAirportPosition(icao) {
 
     //fetch weather of the airport
     const responseWeather = await fetch(
-        'http://127.0.0.1:5000/weather?lat=' + currentAirport_lat + '&long=' +
+        'http://127.0.0.1:5100/weather?lat=' + currentAirport_lat + '&long=' +
         currentAirport_long);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonDataWeather = await responseWeather.json();
     console.log(jsonDataWeather);               // JsonDataweather objects
@@ -180,7 +183,7 @@ async function newAirportPosition(icao) {
 
     //fetch weather of the airport
     const responseWeather = await fetch(
-        'http://127.0.0.1:5000/weather?lat=' + currentAirport_lat + '&long=' +
+        'http://127.0.0.1:5100/weather?lat=' + currentAirport_lat + '&long=' +
         currentAirport_long);    // starting data download, fetch returns a promise which contains an object of type 'response'
 
     const jsonDataWeather = await responseWeather.json();
@@ -188,7 +191,7 @@ async function newAirportPosition(icao) {
     console.log(jsonDataWeather.icon);
     updateWeather(jsonDataWeather.temperature, jsonDataWeather.description,
         jsonDataWeather.wind, jsonDataWeather.icon);      //update weather
-  
+
     return jsonDataWeather;
   } catch (error) {
     console.log(error.message);
@@ -199,7 +202,7 @@ async function newAirportPosition(icao) {
 
 async function co2Consumed(distance) {
   const response = await fetch(
-      'http://127.0.0.1:5000/co2consumed/' + distance);    // starting data download, fetch returns a promise which contains an object of type 'response'
+      'http://127.0.0.1:5100/co2consumed/' + distance);    // starting data download, fetch returns a promise which contains an object of type 'response'
   const jsonData = await response.json();
   console.log(jsonData);
   currentco2Update.innerText = jsonData;
@@ -210,7 +213,7 @@ async function co2Consumed(distance) {
 async function getAirportDistance(icao_start, icao_end) {
   try {
     const response = await fetch(
-        'http://127.0.0.1:5000/airportdistance?start=' + icao_start + '&end=' +
+        'http://127.0.0.1:5100/airportdistance?start=' + icao_start + '&end=' +
         icao_end);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(jsonData);
@@ -227,7 +230,7 @@ async function getAirportDistance(icao_start, icao_end) {
 //fetch countdown Christmas API
 async function addCountDown(){
   try {
-    const response = await fetch('http://127.0.0.1:5000/countdown');    // starting data download, fetch returns a promise which contains an object of type 'response'
+    const response = await fetch('http://127.0.0.1:5100/countdown');    // starting data download, fetch returns a promise which contains an object of type 'response'
     const countDownData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(countDownData);
     const statement = countDownData.statement;
@@ -262,7 +265,7 @@ function quiz(question_screen) {
 //Fetch the quiz game
 async function fetch_question_quiz() {
   try {
-    const response = await fetch('http://127.0.0.1:5000/quiz');    // starting data download, fetch returns a promise which contains an object of type 'response'
+    const response = await fetch('http://127.0.0.1:5100/quiz');    // starting data download, fetch returns a promise which contains an object of type 'response'
     const quizData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(quizData);
     //console.log(quizData.question);                // log the result to the console
@@ -287,7 +290,7 @@ function mathForGifts(changeValue) {
 //fetch gifts amount back to database and server
 async function updateGiftsInDB(gifts) {
   try {
-    const response = await fetch('http://127.0.0.1:5000/updategifts/' + gifts);    // starting data download, fetch returns a promise which contains an object of type 'response'
+    const response = await fetch('http://127.0.0.1:5100/updategifts/' + gifts);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const giftData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     return giftData;
   } catch (error) {
@@ -298,7 +301,7 @@ async function updateGiftsInDB(gifts) {
 //fetch the reward/robbery that affect gift change from Database
 async function changeGift(change) {
   try {
-    const response = await fetch('http://127.0.0.1:5000/giftschange/' + change);    // starting data download, fetch returns a promise which contains an object of type 'response'
+    const response = await fetch('http://127.0.0.1:5100/giftschange/' + change);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const giftChangeData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(giftChangeData);
     await mathForGifts(giftChangeData);
@@ -329,11 +332,12 @@ async function checkAnswer() {
   next_button.innerHTML = 'Next destination';
   next_button.setAttribute('class', 'game-btn');
   document.getElementById('next-btn').appendChild(next_button);
-  next_button.addEventListener('click', loopNextStop);
+  next_button.addEventListener('click', rock_paper_scissors);
   next_button.onclick = function() {
     document.getElementById('next-btn').innerHTML = '';
     document.getElementById('answer-selection').innerHTML = '';
   };
+
 }
 
 //push true,false options and button for quiz game
@@ -383,14 +387,13 @@ function rock_paper_scissors() {
   rpsButton.innerText = 'Submit';
   rps_div.appendChild(rpsButton);
   rpsButton.addEventListener('click', rpsExecute);
-
 }
 
 //fetch the computer options in RPS game
 async function checkComputerOption(playerValue) {                 // asynchronous function is defined by the async keyword
   try {                                               // error handling: try/catch/finally
     const response = await fetch(
-        'http://127.0.0.1:5000/rpsgame/' + playerValue);    // starting data download, fetch returns a promise which contains an object of type 'response'
+        'http://127.0.0.1:5100/rpsgame/' + playerValue);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(jsonData);
     console.log(jsonData.computerChoice, jsonData.status, jsonData.result);
@@ -406,6 +409,9 @@ async function checkComputerOption(playerValue) {                 // asynchronou
     h2.setAttribute('id', 'rps-statement');
     h2.appendChild(document.createTextNode(
         `${jsonData.result}. Check your gifts update!`));
+    const button_destination = document.createElement('button');
+    h2.appendChild(button_destination)
+    button_destination.innerHTML = "Hello"
     mainProgramDiv.appendChild(h2);
     if (jsonData.status == -1) {
       changeGift('deduct');
@@ -421,6 +427,7 @@ async function checkComputerOption(playerValue) {                 // asynchronou
 function showRpsResult() {
   const gameResultDiv = document.createElement('div');
   rps_div.appendChild(gameResultDiv);
+
 }
 
 //when button is clicked, collect the player's option in RPS game and compare with Computer game
@@ -456,7 +463,7 @@ async function airport_start(evt) {
 
   //await addCountDown();
   await fetch_question_quiz();
-  pushQuiz();
+  game();
 }
 
 /* draw the map with two positions and a line between them */
@@ -505,7 +512,7 @@ const loopNextStop = () => {
 async function findNextAirport(icao_start) {
   try {
     const response = await fetch(
-        'http://127.0.0.1:5000/next_airport/' + icao_start);    // starting data download, fetch returns a promise which contains an object of type 'response'
+        'http://127.0.0.1:5100/next_airport/' + icao_start);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     console.log(jsonData, 'vavavavav');
     drawMapWithLine(jsonData.start, jsonData.end);
@@ -535,7 +542,7 @@ async function airportFetches() {                 // asynchronous function is de
   div_ICAO.innerHTML = '';                        //empty the select option of game
   try {                                               // error handling: try/catch/finally
     //console.log(city.value);
-    const response = await fetch('http://127.0.0.1:5000/' + city.value);    // starting data download, fetch returns a promise which contains an object of type 'response'
+    const response = await fetch('http://127.0.0.1:5100/' + city.value);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
     //console.log(jsonData[0]['Airport name']);
 
@@ -555,4 +562,7 @@ search.addEventListener('click', fetch_airport);
 if (gifts <= 0) {
   alert('Game over! You have 0 gift');
   location = 'Exit.html';
+}
+function game(){
+  pushQuiz()
 }

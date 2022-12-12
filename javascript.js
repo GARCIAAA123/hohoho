@@ -150,6 +150,7 @@ async function getAirportPosition(icao) {
 
 ////////////////////////////////
 async function newAirportPosition(icao) {
+
   try {
 
     let pos = [degrees];                                  // create position array for leaflet library
@@ -181,12 +182,13 @@ async function newAirportPosition(icao) {
     const responseWeather = await fetch(
         'http://127.0.0.1:5000/weather?lat=' + currentAirport_lat + '&long=' +
         currentAirport_long);    // starting data download, fetch returns a promise which contains an object of type 'response'
+
     const jsonDataWeather = await responseWeather.json();
     console.log(jsonDataWeather);               // JsonDataweather objects
     console.log(jsonDataWeather.icon);
     updateWeather(jsonDataWeather.temperature, jsonDataWeather.description,
         jsonDataWeather.wind, jsonDataWeather.icon);      //update weather
-
+  
     return jsonDataWeather;
   } catch (error) {
     console.log(error.message);
@@ -327,7 +329,7 @@ async function checkAnswer() {
   next_button.innerHTML = 'Next destination';
   next_button.setAttribute('class', 'game-btn');
   document.getElementById('next-btn').appendChild(next_button);
-  next_button.addEventListener('click', findNextAirport);
+  next_button.addEventListener('click', loopNextStop);
   next_button.onclick = function() {
     document.getElementById('next-btn').innerHTML = '';
     document.getElementById('answer-selection').innerHTML = '';
@@ -494,6 +496,10 @@ function airportOptions(jsonData) {
   };
 }
 
+const loopNextStop = () => {
+  findNextAirport();
+};
+
 // SELECT NEXT AIRPORT TO FLY TO
 
 async function findNextAirport(icao_start) {
@@ -501,7 +507,7 @@ async function findNextAirport(icao_start) {
     const response = await fetch(
         'http://127.0.0.1:5000/next_airport/' + icao_start);    // starting data download, fetch returns a promise which contains an object of type 'response'
     const jsonData = await response.json();          // retrieving the data retrieved from the response object using the json() function
-    console.log(jsonData, "vavavavav");
+    console.log(jsonData, 'vavavavav');
     drawMapWithLine(jsonData.start, jsonData.end);
     degrees = jsonData.Degrees;
     distanceTotal = jsonData.DistanceToRoi;     // log the result to the console
@@ -517,7 +523,7 @@ async function findNextAirport(icao_start) {
     console.log(error.message);
   }
   newAirportPosition();
-}
+};
 
 //fetch all the airports in the chosen city
 function fetch_airport(evt) {
